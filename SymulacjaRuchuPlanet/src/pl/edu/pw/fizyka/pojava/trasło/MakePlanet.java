@@ -160,14 +160,14 @@ public class MakePlanet extends JFrame {
 		buttonAddPlanet.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int o=0, x=0, y=0, r=0, r0=1, o0=5;
-				double t0=0.5, t=0;
+				double t0=0.3, t=0;
 				
 				float r1 = Float.parseFloat(textFieldRadiusPlanet.getText());
 				r=(int) (r0*r1/2439.7);
 				float o1 = Float.parseFloat(textFieldOrbitalDistance.getText());
 				o = (int) (o0*o1/57.740)+10;
 				float t1 = Float.parseFloat(textFieldPeriod.getText());
-				t = t0*t1/2111;
+				t = t0*t1/87.969;
 				x=x0/2+o-r;
 				y=y0/2-r;
 				ss += textFieldNamePlanet.getText();

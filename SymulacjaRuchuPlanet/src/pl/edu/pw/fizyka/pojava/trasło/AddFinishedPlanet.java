@@ -176,7 +176,7 @@ public class AddFinishedPlanet extends JFrame {
 	        		x=x0/2+o-r;
 	        		y=y0/2-r;
 	        		ss += "Merkury - najmniejsza i po³o¿ona najbli¿ej S³oñca planeta \n"
-	        				+ "Jest trudny do obserwacji, ale mimo tego widaæ go go³ym okiem!";
+	        				+ "Jest trudny do obserwacji, ale mimo tego widaæ go go³ym okiem!\n";
 	        	}
 	        	if(listPlanets.getSelectedIndex()==1) {
 	        		resource = getClass().getResource("obrazki/wenus.png"); 

@@ -1,6 +1,6 @@
 package pl.edu.pw.fizyka.pojava.tras³o;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.awt.Graphics;
 import java.awt.LayoutManager;
@@ -19,19 +19,22 @@ public class AnimationPanel extends JPanel {
 	
 	List<Planet> planets = new ArrayList<Planet>();
 	BufferedImage imageSun=null, imageBackground=null;
+	int width=805;
+	int height=740;
+	int controlOnOff=0;
+	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	double dt =0.0000001;
+	int x,y;
+	
 	public AnimationPanel() {
 		
 	}
-	/*public void addPlanet(int r, int t,BufferedImage im) {
-		Planet pl = new Planet();
-		pl.setRadius(r);
-		pl.addImage(im);
-		pl.setPeriod(t);
-		
-		planets.add(pl);
-	}*/
 	public void addPlanet(List<Planet> pl) {
 		planets=pl;
+		repaint();
+	}
+	public void clearPlanet() {
+		planets.clear();
 		repaint();
 	}
 	public int width() {
@@ -40,16 +43,52 @@ public class AnimationPanel extends JPanel {
 	public int height() {
 		return this.getHeight();
 	}
+	public int getControlOnOff() {
+		return controlOnOff;
+	}
 	void start() {
-
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate((new Runnable() {
+		controlOnOff=1;
+		scheduler.execute(new Runnable() {
 			public void run() {
-				
-				repaint();
+				while(controlOnOff==1) {
+					for(Planet pl: planets) {
+						pl.setAngle(pl.getAngle()+pl.getSpeed()*dt);
+					}
+					for(Planet pl: planets) {
+						
+						x = (int) (pl.getRadiusOrb()*Math.cos(-pl.getAngle())+width/2- pl.getRadiusPl());
+						y = (int) (pl.getRadiusOrb()*Math.sin(-pl.getAngle())+height/2- pl.getRadiusPl());
+						
+						pl.setX(x);
+						pl.setY(y);
+					}
+					repaint();
+				}
 			}
-		}), 0, 10,SECONDS);
+		});
+		/*scheduler.scheduleAtFixedRate((new Runnable() {
+			//int angle = 0;
+			public void run() {
+				while(controlOnOff==1) {
+					for(Planet pl: planets) {
+						int speed=(int) (2*Math.PI/pl.getPeriod());
+						int x = (int) (pl.getRadiusOrb()*Math.cos(pl.getAngle())+width/2);
+						int y = (int) (pl.getRadiusOrb()*Math.sin(pl.getAngle())+height/2);
+						pl.setAngle(pl.getAngle()+speed);
+						pl.setX(x);
+						pl.setY(y);
+					}
+					repaint();
+				}
+			}
+		}), 0, 1,MILLISECONDS);*/
 
+	}
+	void stop(){
+		controlOnOff=0;
+	}
+	void close() {
+		scheduler.shutdown();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -69,7 +108,7 @@ public class AnimationPanel extends JPanel {
             e.printStackTrace();
         }
         g.drawImage(imageBackground, 0, 0,this.getWidth(),this.getHeight(), this);
-		g.drawImage(imageSun, this.getWidth()/2, this.getHeight()/2, 20, 20, this);
+		g.drawImage(imageSun, width/2-10, height/2-10, 20, 20, this);
 		for(Planet pl: planets) {
 			pl.paint(g);
 		}

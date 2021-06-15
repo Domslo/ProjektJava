@@ -34,7 +34,8 @@ public class PlanetsExperiment extends JFrame {
 	JPanel p1;
 	AnimationPanel p2;
 	JPanel p3;
-	AddFinishedPlanet frame;
+	AddFinishedPlanet frame1;
+	MakePlanet frame2;
 	
 	Object selectedValue;
 	Color wybranyKolor;
@@ -44,7 +45,7 @@ public class PlanetsExperiment extends JFrame {
 	public PlanetsExperiment() throws HeadlessException {
 		
 		super(" Symulacja ruchu planetarnego ");
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(1150,800);
  		this.setLocation(200,0);
  		
@@ -67,7 +68,8 @@ public class PlanetsExperiment extends JFrame {
 		 ActionListener exitListener1 = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				FindOutMore frame1 = new FindOutMore();
+				frame1.setVisible(true);
 			}
 		 };
 		 exitButton1.addActionListener(exitListener1);
@@ -84,13 +86,14 @@ public class PlanetsExperiment extends JFrame {
 						"Dodaj planetê ",
 						JOptionPane.INFORMATION_MESSAGE, null, wartosciWyboru, wartosciWyboru[0]);	
 				if(selectedValue==wartosciWyboru[0]) {
-					MakePlanet frame = new MakePlanet();
-					frame.setVisible(true);
+					frame2 = new MakePlanet();
+					frame2.setVisible(true);
+					frame2.setX0Y0(p2.width(), p2.height());
 				}
 				else if(selectedValue==wartosciWyboru[1]) {
-					frame = new AddFinishedPlanet();
-					frame.setVisible(true);
-					frame.setX0Y0(p2.width(), p2.height());
+					frame1 = new AddFinishedPlanet();
+					frame1.setVisible(true);
+					frame1.setX0Y0(p2.width(), p2.height());
 				}
 			}
 		 };
@@ -98,8 +101,18 @@ public class PlanetsExperiment extends JFrame {
 		 JButton addSelectedPlanets = new JButton ("Rysuj wybrane planety");
 		 addSelectedPlanets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for(Planet pl: frame.getPlanets()) {
-					planets.add(pl);
+				if(frame1!=null) {
+					for(Planet pl: frame1.getPlanets()) {
+						planets.add(pl);
+					}
+				}
+				if(frame2!=null) {
+					for(Planet pl: frame2.getPlanets()) {
+						planets.add(pl);
+					}
+				}
+				if(frame1==null && frame2==null) {
+					JOptionPane.showMessageDialog(null, "Nie dodano ¿adnych planet", "Uwaga", JOptionPane.ERROR_MESSAGE);
 				}
 				p2.addPlanet(planets);
 			}
@@ -114,7 +127,8 @@ public class PlanetsExperiment extends JFrame {
 		 ActionListener exitListener3 = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Autorzy: Dominika S³oma, Adrian Traczewski.", "Informacje", JOptionPane.QUESTION_MESSAGE);
+				DetailedInformation frame2 = new DetailedInformation();
+				frame2.setVisible(true);
 			}
 		 };
 		 exitButton3.addActionListener(exitListener3);
@@ -125,7 +139,12 @@ public class PlanetsExperiment extends JFrame {
 		 ActionListener exitListener4 = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				p2.start();
+				if(p2.getControlOnOff()==0) {
+					p2.start();
+				}
+				else {
+					p2.stop();
+				}
 			}
 		 };
 		 exitButton4.addActionListener(exitListener4);
@@ -148,7 +167,13 @@ public class PlanetsExperiment extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					planets.clear();
-					p2.addPlanet(planets);
+					p2.clearPlanet();
+					if(frame1!=null) {
+						frame1.clearPlanets();
+					}
+					if(frame2!=null) {
+						frame2.clearPlanets();
+					}
 				}	
 			});
 		 save.addActionListener(new ActionListener(){
